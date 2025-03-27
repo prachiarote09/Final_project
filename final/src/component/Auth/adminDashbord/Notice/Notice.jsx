@@ -8,13 +8,22 @@ const Notice = () => {
   const [editingIndex, setEditingIndex] = useState(null);
 
   useEffect(() => {
-    const storedNotices = JSON.parse(localStorage.getItem("notices")) || [];
-    setNotices(storedNotices);
+    const fetchNotices = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/notice/");
+        if (!response.ok) throw new Error("Failed to fetch notice");
+
+        const data = await response.json();
+        setNotices(data);
+      } catch (error) {
+        console.error("Error fetching notice:", error);
+      }
+    };
+
+    fetchNotices();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("notices", JSON.stringify(notices));
-  }, [notices]);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -31,8 +40,7 @@ const Notice = () => {
     };
 
     try {
-      const url = `http://localhost:8080/notice/`;
-      const response = await fetch(url, {
+      const response = await fetch("http://localhost:8080/notice/", {
         method: "POST",
         headers: {
           Authorization: localStorage.getItem("token"),
@@ -42,8 +50,6 @@ const Notice = () => {
       });
 
       const result = await response.json();
-      console.log("API Response:", result);
-
       if (!response.ok) {
         console.error("Error response from server:", result);
         return;
@@ -62,9 +68,30 @@ const Notice = () => {
     setEditingIndex(index);
   };
 
-  const handleDeleteNotice = (index) => {
-    const updatedNotices = notices.filter((_, i) => i !== index);
-    setNotices(updatedNotices);
+  const handleDeleteNotice = async (noticeId) => {
+    console.log("Attempting to delete notice with ID:", noticeId);
+  
+    try {
+      const response = await fetch(`http://localhost:8080/notice/${noticeId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to delete notice: ${errorText}`);
+      }
+  
+      // ✅ Remove deleted notice from the UI
+      setNotices((prevNotices) => prevNotices.filter((notice) => notice._id !== noticeId));
+  
+      console.log("Notice deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting notice:", error);
+    }
   };
 
   return (
@@ -125,20 +152,20 @@ const Notice = () => {
           </thead>
           <tbody>
             {notices.length > 0 ? (
-              notices.map((notice, index) => (
-                <tr key={index} className="border-b border-purple-300 hover:bg-purple-100">
+              notices.map((notice) => (
+                <tr key={notice._id} className="border-b border-purple-300 hover:bg-purple-100">
                   <td className="p-4 text-purple-800">{notice.className}</td>
                   <td className="p-4 text-purple-800">{notice.title}</td>
                   <td className="p-4 text-purple-800">{notice.date}</td>
                   <td className="p-4 flex justify-center gap-3">
                     <button
-                      onClick={() => handleEditNotice(index)}
+                      onClick={() => handleEditNotice(notice._id)}
                       className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
                     >
                       <FaEdit /> Edit
                     </button>
                     <button
-                      onClick={() => handleDeleteNotice(index)}
+                      onClick={() => handleDeleteNotice(notice._id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
                     >
                       <FaTrash /> Delete

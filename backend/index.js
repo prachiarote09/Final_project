@@ -12,7 +12,8 @@ const StudentLogin = require('./Routes/StudentLoginRoute');
 const EventRouter = require("./Routes/EventRouter");
 const NoticeRouter = require("./Routes/NoticeRouter");
 const FeedbackRouter = require("./Routes/FeedbackRouter");
-const EventModel = require("./Models/Event")
+const EventModel = require("./Models/Event");
+const NoticeModel = require("./Models/Notice");
 
 app.use(express.json()); // Ensure JSON parsing middleware is added
 app.use(bodyParser.json());
@@ -48,5 +49,15 @@ app.get("/event", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+
+  app.get("/notice", async (req, res) => {
+    try {
+      const notices = await NoticeModel.find(); // Fetch events from MongoDB
+      res.json(notices);
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
 
 
