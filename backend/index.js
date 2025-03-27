@@ -12,6 +12,7 @@ const StudentLogin = require('./Routes/StudentLoginRoute');
 const EventRouter = require("./Routes/EventRouter");
 const NoticeRouter = require("./Routes/NoticeRouter");
 const FeedbackRouter = require("./Routes/FeedbackRouter");
+const EventModel = require("./Models/Event")
 
 app.use(express.json()); // Ensure JSON parsing middleware is added
 app.use(bodyParser.json());
