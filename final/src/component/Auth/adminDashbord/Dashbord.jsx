@@ -18,7 +18,6 @@ import Adminfeedback from "./feedback/Adminfeedback";
 import StudentList from "./StudentFrom/StudentList";
 import DynamicCommitteePage from "./commitee/DynamicCommitteePage/DynamicCommitteePage";
 import { handleSucess } from "../../../Utils";
-import StudentDashboard from "./StudentFrom/StudentDetails";
 
 function Dashbord() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 763);
@@ -174,7 +173,6 @@ function Dashbord() {
                   <Route path="committees/student" element={<Student />} />
                   <Route path="committees/tech-dreamers" element={<Techdreamer />} />
                   <Route path="committees/anti-ragging" element={<Ragging/>} />
-                  <Route path="/student/:name" element={<StudentDashboard />} />
         </Routes>
       </div>
     </div>

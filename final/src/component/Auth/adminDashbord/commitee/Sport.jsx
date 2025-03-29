@@ -43,9 +43,9 @@ const  Sport= () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-blue-200 shadow-lg rounded-lg">
+    <div className="max-w-3xl mx-auto p-6 bg-purple-200 shadow-lg rounded-lg">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <h1 className="text-center text-2xl font-bold text-blue">Sports Committee</h1>
+        <h1 className="text-center text-2xl font-bold text-purple">Sports Committee</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
@@ -55,7 +55,7 @@ const  Sport= () => {
             { label: "GR Number", name: "grNumber" },
           ].map(({ label, name }) => (
             <div key={name}>
-              <label className="block text-blue font-semibold">{label}*</label>
+              <label className="block text-purple font-semibold">{label}*</label>
               <input
                 type="text"
                 name={name}
@@ -63,14 +63,14 @@ const  Sport= () => {
                 onChange={handleChange}
                 placeholder={`Enter ${label}`}
                 required
-                className="w-full p-2 border bg-white border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border bg-white border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500"
               />
             </div>
           ))}
         </div>
 
         <div className="flex justify-center gap-4">
-          <button type="submit" className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">Save</button>
+          <button type="submit" className="bg-green-500 text-black px-6 py-2 rounded-md hover:bg-green-600">Save</button>
           <button type="button" onClick={handleReset} className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">Cancel</button>
         </div>
       </form>
@@ -78,11 +78,11 @@ const  Sport= () => {
       <hr className="my-8 border-t-2 border-gray-300" />
 
       <div>
-        <h2 className="text-xl font-semibold text-blue -200 mt-6">Student List</h2>
+        <h2 className="text-xl font-semibold text-purple -200 mt-6">Student List</h2>
         <div className="overflow-x-auto">
           <table className="w-full mt-4 border-collapse min-w-[300px]">
             <thead>
-              <tr className="bg-blue-500 text-white">
+              <tr className="bg-purple-500 text-black">
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Department</th>
                 <th className="p-3 text-left">Year</th>
@@ -92,7 +92,7 @@ const  Sport= () => {
             </thead>
             <tbody>
               {students.map((student, index) => (
-                <tr key={index} className="border-b border-gray-300 text-white">
+                <tr key={index} className="border-b border-gray-300 text-black">
                   <td className="p-3 bg-transparent">{student.name}</td>
                   <td className="p-3 bg-transparent">{student.department}</td>
                   <td className="p-3 bg-transparent">{student.year}</td>

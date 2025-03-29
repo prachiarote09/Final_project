@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 const Notice = () => {
   const [notices, setNotices] = useState([]);
@@ -12,18 +11,14 @@ const Notice = () => {
       try {
         const response = await fetch("http://localhost:8080/notice/");
         if (!response.ok) throw new Error("Failed to fetch notice");
-
         const data = await response.json();
         setNotices(data);
       } catch (error) {
         console.error("Error fetching notice:", error);
       }
     };
-
     fetchNotices();
   }, []);
-
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -32,13 +27,7 @@ const Notice = () => {
 
   const addNotice = async (e) => {
     e.preventDefault();
-
-    const newData = {
-      className: formData.className.trim(),
-      title: formData.title.trim(),
-      date: formData.date,
-    };
-
+    const newData = { className: formData.className.trim(), title: formData.title.trim(), date: formData.date };
     try {
       const response = await fetch("http://localhost:8080/notice/", {
         method: "POST",
@@ -48,13 +37,8 @@ const Notice = () => {
         },
         body: JSON.stringify(newData),
       });
-
       const result = await response.json();
-      if (!response.ok) {
-        console.error("Error response from server:", result);
-        return;
-      }
-
+      if (!response.ok) throw new Error(result.message || "Failed to add notice");
       setNotices((prev) => [...prev, result.data]);
       setFormData({ className: "", title: "", date: "" });
     } catch (err) {
@@ -62,15 +46,7 @@ const Notice = () => {
     }
   };
 
-  const handleEditNotice = (index) => {
-    const notice = notices[index];
-    setFormData({ className: notice.className, title: notice.title, date: notice.date });
-    setEditingIndex(index);
-  };
-
   const handleDeleteNotice = async (noticeId) => {
-    console.log("Attempting to delete notice with ID:", noticeId);
-  
     try {
       const response = await fetch(`http://localhost:8080/notice/${noticeId}`, {
         method: "DELETE",
@@ -79,108 +55,50 @@ const Notice = () => {
           "Content-Type": "application/json",
         },
       });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to delete notice: ${errorText}`);
-      }
-  
-      // ✅ Remove deleted notice from the UI
+      if (!response.ok) throw new Error("Failed to delete notice");
       setNotices((prevNotices) => prevNotices.filter((notice) => notice._id !== noticeId));
-  
-      console.log("Notice deleted successfully!");
     } catch (error) {
       console.error("Error deleting notice:", error);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-purple-50 p-8 rounded-lg shadow-xl mt-10 border border-purple-200">
-      <h1 className="text-center text-4xl font-bold text-purple-700 mb-6">📢 Notice Board</h1>
-      <form onSubmit={addNotice} className="flex flex-col gap-6">
+    <div className="max-w-3xl mx-auto p-6 bg-gradient-to-b from-purple-500 to-purple-300 shadow-lg rounded-lg">
+      <h1 className="text-center text-2xl font-bold text-white">📢 Manage Notices</h1>
+      <form onSubmit={addNotice} className="space-y-6">
         <div>
-          <label className="block text-purple-700 font-semibold mb-2">Class:</label>
-          <input
-            type="text"
-            id="className"
-            value={formData.className}
-            onChange={handleInputChange}
-            required
-            className="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-          />
+          <label className="block text-white font-semibold">Class:</label>
+          <input type="text" id="className" value={formData.className} onChange={handleInputChange} required className="w-full p-2 border bg-white border-gray-300 rounded-md" />
         </div>
         <div>
-          <label className="block text-purple-700 font-semibold mb-2">Title:</label>
-          <textarea
-            id="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-            rows="3"
-            className="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-          ></textarea>
+          <label className="block text-white font-semibold">Title:</label>
+          <textarea id="title" value={formData.title} onChange={handleInputChange} required className="w-full p-2 border bg-white border-gray-300 rounded-md"></textarea>
         </div>
         <div>
-          <label className="block text-purple-700 font-semibold mb-2">Date:</label>
-          <input
-            type="date"
-            id="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            required
-            className="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
-          />
+          <label className="block text-white font-semibold">Date:</label>
+          <input type="date" id="date" value={formData.date} onChange={handleInputChange} required className="w-full p-2 border bg-white border-gray-300 rounded-md" />
         </div>
-        <button
-          type="submit"
-          className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg transition duration-300 shadow-md"
-        >
+        <div className="flex justify-center gap-4">
+        <button type="submit" className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
           {editingIndex !== null ? "Update Notice" : "Add Notice"}
         </button>
+        </div>
       </form>
-
-      <h2 className="text-2xl font-semibold text-purple-800 mt-8">📋 Saved Notices</h2>
-      <div className="overflow-x-auto mt-4">
-        <table className="w-full border border-purple-300 rounded-lg overflow-hidden shadow-lg">
-          <thead>
-            <tr className="bg-purple-600 text-white text-lg">
-              <th className="p-4 text-left">Class</th>
-              <th className="p-4 text-left">Title</th>
-              <th className="p-4 text-left">Date</th>
-              <th className="p-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notices.length > 0 ? (
-              notices.map((notice) => (
-                <tr key={notice._id} className="border-b border-purple-300 hover:bg-purple-100">
-                  <td className="p-4 text-purple-800">{notice.className}</td>
-                  <td className="p-4 text-purple-800">{notice.title}</td>
-                  <td className="p-4 text-purple-800">{notice.date}</td>
-                  <td className="p-4 flex justify-center gap-3">
-                    <button
-                      onClick={() => handleEditNotice(notice._id)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
-                    >
-                      <FaEdit /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteNotice(notice._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
-                    >
-                      <FaTrash /> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center p-4 text-gray-500">No notices available.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <h2 className="text-xl font-semibold text-white mt-8">📋 Notice List</h2>
+      <ul className="mt-4 space-y-3">
+        {notices.map((notice) => (
+          <li key={notice._id} className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
+            <h3 className="text-lg font-bold">{notice.className}</h3>
+            <p>{notice.title}</p>
+            <p className="text-gray-600">Date: {notice.date}</p>
+            <div className="flex gap-2 mt-2">
+              <button onClick={() => handleDeleteNotice(notice._id)} className="bg-red-500 text-white px-3 py-1 rounded-md mt-2">
+                 Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

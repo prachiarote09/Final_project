@@ -2,15 +2,28 @@ import React, { useEffect, useState } from "react";
 import { FaUserGraduate } from "react-icons/fa";
 import { MdOutlineSchool } from "react-icons/md";
 import { BsFillPersonFill } from "react-icons/bs";
+import axios from "axios";
+import Cultural from "../../../Auth/adminDashbord/commitee/Cultural";
 
 const StudentCultural = () => {
-  const [students, setStudents] = useState([]);
+  const [culturals, setCulturals] = useState([]);
 
   // Load students from localStorage when the component mounts
+  // useEffect(() => {
+  //   const savedStudents = JSON.parse(localStorage.getItem("culturalStudents")) || [];
+  //   setStudents(savedStudents);
+  // }, []);
+
   useEffect(() => {
-    const savedStudents = JSON.parse(localStorage.getItem("culturalStudents")) || [];
-    setStudents(savedStudents);
-  }, []);
+      axios.get("http://localhost:8080/cultural/")
+        .then((response) => {
+          setCulturals(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching events:", error);
+          setError("Failed to load events. Please try again later.");
+        });
+    }, []);
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-gray-50 min-h-screen flex flex-col items-center">
@@ -45,13 +58,13 @@ const StudentCultural = () => {
               </tr>
             </thead>
             <tbody>
-              {students.length > 0 ? (
-                students.map((student, index) => (
+              {culturals.length > 0 ? (
+                culturals.map((cultural, index) => (
                   <tr key={index} className="border-b border-gray-300 hover:bg-purple-100 transition">
-                    <td className="p-4 font-medium">{student.name}</td>
-                    <td className="p-4">{student.department}</td>
-                    <td className="p-4">{student.year}</td>
-                    <td className="p-4">{student.grNumber}</td>
+                    <td className="p-4 font-medium">{Cultural.name}</td>
+                    <td className="p-4">{cultural.department}</td>
+                    <td className="p-4">{cultural.year}</td>
+                    <td className="p-4">{cultural.grNumber}</td>
                   </tr>
                 ))
               ) : (

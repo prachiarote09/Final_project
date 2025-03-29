@@ -92,7 +92,7 @@ function Event() {
   
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gradient-to-r from-pink-400 to-red-400 shadow-lg rounded-lg">
+    <div className="max-w-3xl mx-auto p-6  bg-gradient-to-b from-purple-500 to-purple-300 shadow-lg rounded-lg">
       <h1 className="text-center text-2xl font-bold text-white">Manage Events</h1>
 
       {/* Add Event Form */}

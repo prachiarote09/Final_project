@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const Adminfeedback = () => {
+const AdminFeedback = () => {
   const [feedbackList, setFeedbackList] = useState([]);
+  const [error, setError] = useState(null); // ✅ Added error state
 
-  // Load feedbacks from localStorage on initial render
   useEffect(() => {
-    const savedFeedbacks =
-      JSON.parse(localStorage.getItem("feedbackList")) || [];
-    setFeedbackList(savedFeedbacks);
-  }, []);
-
-  // Get color based on feedback type
-  const getFeedbackColor = (type) => {
-    switch (type) {
-      case "comments":
-        return "bg-blue-100 border-blue-500 text-blue-700";
-      case "suggestions":
-        return "bg-green-100 border-green-500 text-green-700";
-      case "questions":
-        return "bg-yellow-100 border-yellow-500 text-yellow-700";
-      default:
-        return "bg-gray-100 border-gray-300 text-gray-700";
-    }
-  };
+    axios
+      .get("http://localhost:8080/feedback/")
+      .then((response) => {
+        setFeedbackList(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching feedbacks:", error);
+        setError("Failed to load feedbacks. Please try again later.");
+      });
+  }, [feedbackList]); // ✅ Added dependency for real-time updates
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-pink-400 p-4 sm:p-6">
@@ -31,35 +24,32 @@ const Adminfeedback = () => {
           📚 All Submitted Feedbacks
         </h1>
 
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* ✅ Display error if fetch fails */}
+
         {feedbackList.length === 0 ? (
-          <p className="text-gray-600 text-center">
-            No feedback submitted yet. 🚫
-          </p>
+          <p className="text-gray-600 text-center">No feedback submitted yet. 🚫</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {feedbackList.map((feedback, index) => (
               <div
                 key={index}
-                className={`p-5 border-l-4 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105 ${getFeedbackColor(
-                  feedback.feedbackType
-                )}`}
+                className="p-5 border-l-4 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105"
               >
                 <h3 className="text-lg font-bold mb-2">
                   {feedback.firstName} {feedback.lastName}
                 </h3>
                 <p className="text-sm">
-                  <strong>📚 Class:</strong> {feedback.Class}
+                  <strong>📚 Class:</strong> {feedback.className} {/* ✅ Fixed incorrect class key */}
                 </p>
                 <p className="text-sm">
                   <strong>📧 Email:</strong> {feedback.email}
                 </p>
-                <p className="text-sm">
-                  <strong>💬 Type:</strong>{" "}
-                  <span className="capitalize">{feedback.feedbackType}</span>
-                </p>
-                <p className="mt-3 text-sm italic break-words">
-                  "{feedback.feedback}"
-                </p>
+                {feedback.feedbackType && ( // ✅ Only show if feedbackType exists
+                  <p className="text-sm">
+                    <strong>💬 Type:</strong> <span className="capitalize">{feedback.feedbackType}</span>
+                  </p>
+                )}
+                <p className="mt-3 text-sm italic break-words">"{feedback.feedback}"</p>
               </div>
             ))}
           </div>
@@ -69,4 +59,4 @@ const Adminfeedback = () => {
   );
 };
 
-export default Adminfeedback;
+export default AdminFeedback;

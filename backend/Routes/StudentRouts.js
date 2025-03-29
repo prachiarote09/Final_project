@@ -7,6 +7,9 @@ const studentRoute = express.Router();
 
 studentRoute.post('/',ensureAuthenticated,createStudent);
 studentRoute.get('/',ensureAuthenticated,fetchAllData);
-studentRoute.get('/:id',ensureAuthenticated,fetchSingleData);
+
+studentRoute.get("/:id", ensureAuthenticated, fetchSingleData);
+
+//studentRoute.get("/profile", ensureAuthenticated,fetchSingleData);
 
 module.exports = studentRoute;

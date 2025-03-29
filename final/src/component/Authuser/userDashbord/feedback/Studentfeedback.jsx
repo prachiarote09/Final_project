@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Ensure this is imported correctly
 
 const StudentFeedback = () => {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    className: "", // Fixed className field
+    className: "",
     email: "",
     feedback: "",
   });
@@ -13,21 +16,30 @@ const StudentFeedback = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [errors, setErrors] = useState({});
 
+  // Fetch feedbacks from the backend
   useEffect(() => {
-    const savedFeedbacks = JSON.parse(localStorage.getItem("feedbackList")) || [];
-    setFeedbackList(savedFeedbacks);
-  }, []);
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/feedback/");
+        if (!response.ok) throw new Error("Failed to fetch feedbacks");
 
-  const saveToLocalStorage = (feedbacks) => {
-    localStorage.setItem("feedbackList", JSON.stringify(feedbacks));
-  };
+        const data = await response.json();
+        setFeedbackList(data);
+      } catch (error) {
+        console.error("Error fetching feedbacks:", error);
+      }
+    };
+    fetchFeedbacks();
+  }, [feedbackList]); // Include feedbackList to update when a new feedback is added
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
   };
 
+  // Validate form inputs
   const validateForm = () => {
     const newErrors = {};
     if (!formData.firstName.trim()) newErrors.firstName = "First Name is required.";
@@ -44,6 +56,7 @@ const StudentFeedback = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Function to add feedback
   const addFeedback = async () => {
     const newData = {
       firstName: formData.firstName.trim(),
@@ -59,7 +72,7 @@ const StudentFeedback = () => {
       const response = await fetch("http://localhost:8080/feedback/", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: localStorage.getItem("token"),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newData),
@@ -75,24 +88,26 @@ const StudentFeedback = () => {
 
       const updatedFeedbacks = [...feedbackList, newData];
       setFeedbackList(updatedFeedbacks);
-      saveToLocalStorage(updatedFeedbacks);
+      localStorage.setItem("feedbackList", JSON.stringify(updatedFeedbacks)); // Saving locally
       handleFeedbackReset();
     } catch (error) {
       console.error("Error submitting feedback:", error);
     }
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     addFeedback();
   };
 
+  // Reset form after submission
   const handleFeedbackReset = () => {
     setFormData({
       firstName: "",
       lastName: "",
-      className: "", // Fixed className field
+      className: "",
       email: "",
       feedback: "",
     });

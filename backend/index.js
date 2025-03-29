@@ -15,6 +15,7 @@ const FeedbackRouter = require("./Routes/FeedbackRouter");
 const EventModel = require("./Models/Event");
 const NoticeModel = require("./Models/Notice");
 
+
 app.use(express.json()); // Ensure JSON parsing middleware is added
 app.use(bodyParser.json());
 app.use(cors());
@@ -27,6 +28,7 @@ app.use("/notice", NoticeRouter);
 app.use("/feedback",FeedbackRouter);
 
 const db=require('./Models/db');
+const FeedbackModel = require("./Models/Feedback");
 db();
 
 require('dotenv').config();
@@ -39,6 +41,14 @@ app.get('/ping',(req,res)=>{
 app.listen(PORT, () =>{
     console.log(`server is running on ${PORT}`)
 })
+// app.get("/student", async (req, res) => {
+//   try {
+//     const students = await Student.find(); // Fetch all students
+//     res.json({ data: students });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching students", error });
+//   }
+// });
 
 
 app.get("/event", async (req, res) => {
@@ -58,6 +68,27 @@ app.get("/event", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+
+  app.get("/feedback", async (req, res) => {
+    try {
+      const feedbacks = await FeedbackModel.find(); // Fetch events from MongoDB
+      res.json(feedbacks);
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // app.get("/cultural", async (req, res) => {
+  //   try {
+  //     const cultural = await CulturalModel.find(); // Fetch events from MongoDB
+  //     res.json(cultural);
+  //   } catch (error) {
+  //     res.status(500).json({ error: "Internal Server Error" });
+  //   }
+  // });
+
+
+
 
 
 

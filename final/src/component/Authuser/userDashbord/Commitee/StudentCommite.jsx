@@ -12,11 +12,7 @@ import {
 function StudentCommite() {
   const [committees, setCommittees] = useState([]);
 
-  // Load committees when component mounts
   useEffect(() => {
-    console.log("Loading default and saved committees...");
-
-    // Default Committees
     const defaultCommittees = [
       { title: "Cultural Committee", path: "/user-dashboard/committeess/cultural" },
       { title: "Sports Committee", path: "/user-dashboard/committeess/sports" },
@@ -25,46 +21,26 @@ function StudentCommite() {
       { title: "Anti-Ragging", path: "/user-dashboard/committeess/anti-ragging" },
     ];
 
-    // Fetch Saved Committees from localStorage
     const savedCommittees = JSON.parse(localStorage.getItem("committees")) || [];
-    console.log("Fetched Committees from localStorage:", savedCommittees);
 
-    // Merge Default and Saved Committees
     const updatedCommittees = [
       ...defaultCommittees,
       ...savedCommittees
-        .filter((c) => {
-          // Validate the committee data
-          const validName = c.name && typeof c.name === "string";
-          return validName;
-        })
-        .map((c) => {
-          const committeeName = c.name || "Unnamed";
-          console.log("Processing Committee Name:", committeeName);
-          return {
-            title: committeeName,
-            path: `/user-dashboard/committeess/${committeeName
-              .replace(/\s+/g, "-")
-              .toLowerCase()}`,
-          };
-        }),
+        .filter((c) => c.name && typeof c.name === "string")
+        .map((c) => ({
+          title: c.name,
+          path: `/user-dashboard/committeess/${c.name.replace(/\s+/g, "-").toLowerCase()}`,
+        })),
     ];
 
-    console.log("Final list of committees:", updatedCommittees);
     setCommittees(updatedCommittees);
   }, []);
 
   return (
-    <div className="font-sans min-h-screen bg-gradient-to-b from-gray-50 to-gray-200">
-      {/* Header */}
-      <nav className="flex items-center justify-between bg-gradient-to-r from-blue-700 to-blue-500 text-white p-5 shadow-lg">
-        <div className="text-3xl font-bold tracking-wide flex items-center gap-2">
-          <FaUserFriends className="text-white" />
-          Committee Members
-        </div>
-      </nav>
-
-      {/* Committee Sections */}
+    <div className="font-sans min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 p-6">
+      <h1 className="text-3xl font-bold text-center mt-6 text-blue-700">
+        Student Committees
+      </h1>
       <div className="flex justify-center gap-8 mt-8 flex-wrap">
         {committees.map((committee, index) => (
           <Section key={index} title={committee.title} path={committee.path} />
@@ -74,21 +50,21 @@ function StudentCommite() {
   );
 }
 
-// Get Icon Based on Committee
 const getIcon = (title) => {
+  const iconClass = "text-blue-600 text-3xl mb-3";
   switch (title) {
     case "Cultural Committee":
-      return <FaTheaterMasks className="text-blue-200 text-3xl mb-3" />;
+      return <FaTheaterMasks className={iconClass} />;
     case "Sports Committee":
-      return <FaFootballBall className="text-green-200 text-3xl mb-3" />;
+      return <FaFootballBall className={iconClass} />;
     case "Student Committee":
-      return <FaUserFriends className="text-yellow-200 text-3xl mb-3" />;
+      return <FaUserFriends className={iconClass} />;
     case "Tech Dreamers":
-      return <FaCode className="text-purple-200 text-3xl mb-3" />;
+      return <FaCode className={iconClass} />;
     case "Anti-Ragging":
-      return <FaShieldAlt className="text-red-200 text-3xl mb-3" />;
+      return <FaShieldAlt className={iconClass} />;
     default:
-      return <FaEye className="text-gray-400 text-3xl mb-3" />;
+      return <FaEye className={iconClass} />;
   }
 };
 
@@ -96,25 +72,17 @@ function Section({ title, path }) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-blue-700 border border-blue-600 rounded-xl p-6 w-80 text-left shadow-md transform hover:scale-105 transition-transform hover:shadow-2xl hover:border-blue-400 hover:bg-blue-600 relative group">
-      {/* Icon and Title */}
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-white border border-gray-200 rounded-xl p-6 w-80 text-left shadow-md transform hover:scale-105 transition-transform hover:shadow-2xl hover:border-blue-500 hover:bg-gradient-to-r from-gray-50 to-white relative group">
+      <div className="flex items-center gap-3 mb-3">
         {getIcon(title)}
-        <h3 className="text-xl font-semibold text-white group-hover:text-blue-200 transition-all">
-          {title}
-        </h3>
+        <h3 className="text-xl font-semibold text-blue-600">{title}</h3>
       </div>
-
-      <p className="text-sm text-blue-200 mb-4 leading-relaxed">
+      <p className="text-sm text-gray-500 mb-4 leading-relaxed">
         Explore the {title} and get involved with various activities and initiatives.
       </p>
-
       <button
-        onClick={() => {
-          console.log(`Navigating to: ${path}`);
-          navigate(path);
-        }}
-        className="bg-white text-blue-700 px-4 py-2 rounded-lg flex items-center gap-2 hover:scale-105 hover:shadow-lg transition-all"
+        onClick={() => navigate(path)}
+        className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:scale-105 hover:shadow-lg transition-all"
       >
         <FaEye />
         View

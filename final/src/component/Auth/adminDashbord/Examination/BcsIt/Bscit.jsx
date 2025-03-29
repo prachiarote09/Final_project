@@ -1,20 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
 
 function Bscit() {
-  const navigate = useNavigate(); // ✅ Added useNavigate hook for navigation
+  const navigate = useNavigate();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-center mt-6">Welcome to BScIT Examination</h1>
+    <div className="font-sans min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 p-6">
+      <h1 className="text-3xl font-bold text-center mt-6 text-purple-700">
+        Welcome to BScIT Examination
+      </h1>
 
       {/* Sections with Tables */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <div className="flex justify-center gap-6 mt-6 flex-wrap">
         <Section title="Exam Timetable" path="exam-timetable" navigate={navigate} />
         <Section title="Result" path="percentage" navigate={navigate} />
         <Section title="Previous Year Question Paper" path="previousyear" navigate={navigate} />
         <Section title="Question Bank" path="questionbank" navigate={navigate} />
-        <Section title="CouseOverview" path="bsccourse" navigate={navigate} />
+        <Section title="Course Overview" path="bsccourse" navigate={navigate} />
       </div>
     </div>
   );
@@ -22,31 +25,18 @@ function Bscit() {
 
 function Section({ title, path, navigate }) {
   return (
-    <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 w-full text-left shadow-md">
-      <h3 className="text-lg font-semibold mb-3">{title}</h3>
-      <table className="w-full border-collapse mt-2">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2">Action</th>
-            <th className="border px-4 py-2">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border px-4 py-2">
-              <button
-                className="text-white px-3 py-1 rounded bg-pink-400 hover:bg-pink-500"
-                onClick={() => navigate(`/admin-dashboard/examination/bscit/${path}`)}
-              >
-                Add
-              </button>
-            </td>
-            <td className="border px-4 py-2">
-              Add a new record to {title.toLowerCase()}.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="bg-gradient-to-b from-purple-100 to-purple-200 border border-purple-300 rounded-xl p-6 w-80 text-left shadow-md transform hover:scale-105 transition-transform hover:shadow-2xl hover:border-purple-500 hover:bg-gradient-to-rrelative group">
+      <h3 className="text-xl font-semibold text-purple-700 mb-3">{title}</h3>
+      <p className="text-sm text-gray-600 mb-4 leading-relaxed">
+        Manage {title.toLowerCase()} details efficiently.
+      </p>
+      <button
+        className="w-32 bg-gradient-to-r from-purple-700 to-purple-900 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:scale-105 hover:shadow-lg transition-all"
+        onClick={() => navigate(`/admin-dashboard/examination/bscit/${path}`)}
+      >
+        <FaEye />
+        View
+      </button>
     </div>
   );
 }

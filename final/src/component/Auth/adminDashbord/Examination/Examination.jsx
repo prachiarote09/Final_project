@@ -31,7 +31,7 @@ function Examination() {
   return (
     <div className="font-sans min-h-screen">
       {/* Navbar */}
-      <nav className="flex items-center justify-center bg-pink-500 text-white p-4 space-x-6">
+      <nav className="flex items-center justify-center bg-purple-800 text-white p-4 space-x-6">
         <Link to="/admin-dashboard/examination/bca" className="cursor-pointer hover:underline">BCA</Link>
         <Link to="/admin-dashboard/examination/bms" className="cursor-pointer hover:underline">BMS</Link>
         <Link to="/admin-dashboard/examination/bcom" className="cursor-pointer hover:underline">BCOM</Link>

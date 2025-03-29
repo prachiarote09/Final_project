@@ -44,11 +44,11 @@ function AdminSignUpPage() {
           const {success , message, jwtToken,name , error ,_id} = result;
           if(success){                                        //Checks if signup was successful (success is true).
               handleSucess(message);                          //Shows a success message (handleSuccess(message)).
-              
+              console.log(formData);
               localStorage.setItem('token' , jwtToken);
               localStorage.setItem('loggedInUser',name);
               localStorage.setItem('user_id',_id);
-
+              
               setTimeout(()=>{
                   navigate('/admin-dashboard')                          //Waits 1 second and redirects to the login page (navigate('/login')).
               } ,1000)
@@ -62,6 +62,7 @@ function AdminSignUpPage() {
       } catch (err) {                                            //If an error occurs, calls handleError(err). */
           handleError(err);
       }
+
   }
     
 
@@ -99,12 +100,12 @@ function AdminSignUpPage() {
             Login
           </button>
 
-          <p className="mt-4 text-sm text-center text-gray-600">
+          {/* <p className="mt-4 text-sm text-center text-gray-600">
           Already have an account? {" "}
           <Link to="/admin/signup" className="text-blue-500 hover:underline">
             Login here
           </Link>
-        </p>
+          </p> */}
         </form>
       </div>
       <ToastContainer></ToastContainer>
